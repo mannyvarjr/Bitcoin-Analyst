@@ -1,0 +1,187 @@
+{
+  "name": "Project: Bitcoin Analyst",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2b02135c-585e-46d5-b73f-26b3bcdfb6b0",
+      "name": "When chat message received",
+      "webhookId": "49653753-1f8b-430e-867f-35bbdf1548e1"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1xbFVn8DQMrsqPMwetPMgqRXIw8tl8SkJ",
+          "mode": "list",
+          "cachedResultName": "FMF-2014-How-Bitcoin-Works.pdf",
+          "cachedResultUrl": "https://drive.google.com/file/d/1xbFVn8DQMrsqPMwetPMgqRXIw8tl8SkJ/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        32
+      ],
+      "id": "1334cf69-c104-4d79-b11d-7d21f82f0e47",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "RgAsWPvLdmgqPjI6",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        32
+      ],
+      "id": "6b9659de-8ef1-471b-88c6-fcbd91f8d415",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Answer:  {{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are a bitcoin assistant. Your answers should be short. In your answers, consider the following text:  \"How Bitcoin Works\\nSam Patterson\\nOctober 2014\\nAbstract. Bitcoin is a technological and monetary innovation that allows for the peer to\\npeer transfer of value online without trusting third parties. The system uses a distributed\\npublic ledger to reach consensus among network participants about the legitimacy of\\ntransactions. This ledger isn't denominated with fiat currencies, but instead uses its own\\nunits called bitcoins. The system relies on various elements of cryptography to ensure\\nthat this public ledger is accurate instead of trusting a central institution. The code is\\nopen-source and the network is decentralized, resulting in low barriers to entry and\\ncensorship-resistance. New bitcoins are issued by a predictable algorithm that is intended\\nto replicate mining for a scare resource.\\nDouble-spending problem\\nBitcoin is both a currency and a payment network. While most attention is paid to the currency, the\\ntechnological innovation that makes Bitcoin unique is in its payment network. To understand why\\nBitcoin is valuable, we must understand the context of digital payments previous to this innovation.\\nBitcoin is not the first digital currency. The majority of the traditional fiat money supply isn't physically\\nprinted, but instead is represented digitally. Services such as PayPal, WebMoney, or Liberty Reserve\\nallowed individuals to send and receive money digitally.\\nAll of these digital currencies were centralized, meaning they have an issuing body and organization\\nwho is able to control transactions on the network. This was necessary because of the double-spending\\nproblem. Because data is trivially easy to replicate, using digital currency has one inherent drawback.\\nThe recipient cannot be certain their digital representation of value hasn't been duplicated, and spent\\nelsewhere. This conundrum is called the double-spending problem, and it was dealt with by having a\\ncentral organization maintain the ledger balances of the currencies. This meant that this organization—\\nwhether a governmental body or a private company—would be able to directly control the balances and\\ntransactions occurring on the network.\\nBitcoin solves the double-spending problem without relying on a central organization to maintain the\\nledger. Instead, it makes the transaction ledger public, distributes it among network participants, and\\nrelies on consensus to ensure that balances are accurate. This distributed ledger—called the blockchain\\n—contains the history of every transaction which has ever occurred on the network, allowing any\\nparticipant to know the exact ledger balances at any moment and verify if proposed transactions are\\nlegitimate. Once the first transaction has been recorded in the blockchain, any attempt at double-\\nspending would be automatically rejected by network participants as invalid.\\nPublic key cryptography\\nPublic key cryptography is used for the digital signatures. Public key cryptography is a technology that\\nallows for secure digital signatures by creating a pair of keys, a private key and a corresponding public\\nkey. The keys are seemingly random strings of alphanumeric characters that correspond to each other.\\nUsing public key cryptography allows a user to sign messages with their private key, and for other\\nusers to verify that the message's signature is accurate by checking it against the corresponding public\\nkey. As an example, consider sending a digitally signed email message. I would first distribute my\\n\\npublic key to the recipients. I would then digitally sign the message with my private key, and send the\\nemail message. The recipients would then check the digital signature against the public key to verify\\naccuracy. Only the owner of the private key would be able to create a signature that can be verified by\\nthe public key.\\nBitcoin uses an elliptical curve—specifically the secp256k1 curve—in order to create the key pair. The\\npublic key in the pair is used to create the Bitcoin address. These addresses are identifiers for where the\\nbitcoins reside in the blockchain. The private key in the pair that corresponds to the public address is\\nthen used as proof of ownership over that entry in the ledger. In this sense, owning bitcoins in a public\\naddress actually means having control of the corresponding private key.\\nIn order for network participants (commonly referred to individually as nodes) to determine that a user\\nis legitimately in control over a certain entry in the public ledger, the node which initiates a transaction\\nwill sign a message with their private key stating that they want to send bitcoins from their public\\naddress to another public address. If other nodes verify the signature is valid and the amount is valid,\\nthat transaction is then put into a type of queue—called a block—until the block is entered into the\\nblockchain. If the signature doesn't correspond to the public address, then the transaction is rejected by\\nlocal nodes and will not enter into a block. New blocks are added to the blockchain approximately\\nevery ten minutes, which is how the blockchain derives its name—it is a chronological chain of blocks\\ncontaining all the transactions on the network back to the first transaction, dubbed the genesis block. As\\nof mid-October 2014, there are approximately 326,000 blocks in the blockchain.\\nProof-of-work\\nThere are cryptographic rules determining how blocks are created and entered into the blockchain.\\nThese are necessary to make sure that blocks are created in chronological order, and at a somewhat\\nregular time interval. If blocks didn't follow these rules, it would be nearly impossible for network\\nparticipants to agree to a single version of the blockchain; transactions with different blocks in the\\nblockchain wouldn't be compatible, and the entire network would be unusable.\\nThis is solved by incorporating proof-of-work for those maintaining the blockchain. Proof-of-work\\nmeans that creating a block is intentionally made more computationally difficult, thus taking more time.\\nThis is achieved by only allowing a node to issue a block after it has done extensive cryptographic\\nhashing. Hashing is a one-way function that takes arbitrary information and changes it to a fixed size\\nand format. Creating a hash of data is simple, but recreating the data from only the hash is difficult.\\nBitcoin uses hashing as a proof-of-work, specifically the SHA-256 hash function. In order for a node to\\nbroadcast a block to the network for confirmation and acceptance into the blockchain, it must also\\nbroadcast proof that they did the extensive hashing necessary to find the solution to an arbitrary puzzle.\\nAll nodes who are attempting to add a block into the blockchain are simultaneously hashing SHA-256\\nin search for an output that begins with a certain number of zeros. Since the output of the hash function\\nis essentially random, nodes rapidly iterate through values in search of this elusive output. The first\\nnode to find the correct value broadcasts the answer along with the block, and if other nodes verify the\\nanswer is correct, the block is entered into the blockchain. This is called “finding a block.”\\nSince more hashing power can easily be added to the network, Bitcoin uses an algorithm to ensure that\\nthe blocks are still created approximately ten minutes apart. Hashing difficult is increased automatically\\nby adding more zeros onto the hash output required, thus making finding the value computationally\\nmore difficult.\\nIt's possible for two blocks to be found nearly simultaneously. In this case, the network can temporarily\\nbe said to have two competing blockchains. This is solved as soon as one of the blockchains finds the\\n\\nnext block. The code automatically considers the longest blockchain to be valid, so miners which were\\nworking on the shorter blockchain will switch over immediately. The block which didn't enter the\\nlongest chain is called an orphaned block and is abandoned.\\nMining\\nNodes which participate in hashing in order to create blocks and maintain the blockchain are called\\nminers. Miners are essential to keeping the network functioning, and their efforts are rewarded by\\nreceiving a block reward if they successfully find a block. This reward is in bitcoins. Originally, a block\\nreward was 50 bitcoins, but the reward is halved approximately every 4 years. Currently at 25 bitcoins,\\nthe block reward is projected to halve again in late 2016. This continual halving is meant to replicate\\nthe mining of a scare resource. Apart from the block rewards, miners also receive small transaction fees\\nfor verifying transactions on the network.\\nBecause of these incentives, the hashing power of the Bitcoin network is substantial. As of mid-October\\n2014, the network is performing 261 million billion hashes every second.\\nWhen the Bitcoin network was young, miners used normal CPUs in desktops or laptops to hash for\\ncoins. As more users joined the network, some realized they could hash more quickly by using GPUs\\ninstead. Driven partially by the increase in value, hardware eventually was built with the sole purpose\\nof hashing SHA-256 in order to mine bitcoin. Application specific integrated circuit (ASIC) hardware\\nis now necessary to do any effective mining on the network.\\nBecause there are so many miners, the chances of individually finding a block are small. To improve\\ntheir chances, miners have grouped together and created mining pools. These pools allow everyone to\\ncoordinate their hashing power and increase their chances for finding a block. The block reward is then\\nsplit based on how much hashing power a miner contributed to the pool, minus a fee if the operator of\\nthe pool charges for the service.\\nMining pools have become the standard way for miners to search for block rewards. This has raised\\nsome concerns around centralization of the network. If one pool of miners reached 51% of the network\\nthey would be able to negatively impact the creation of new blocks, though it would appear to be\\nagainst their own interests to do so. This “51% attack” has never occurred on the Bitcoin network.\\nThis method of issuing currency is substantially different than fiat currency models. Instead of being\\ndirectly controlled by a central issuing organization, the Bitcoin network creates new currency based on\\na predictable algorithm, and in a decentralized fashion. Any network participant can become a miner\\nand attempt to find a block reward. Arbitrary increases in the money supply aren't possible, making\\ninflation unlikely. While Bitcoin is too young to make any definitive statements on how it functions as\\na monetary system, it appears that because of the limited supply that increasing demand will effectively\\nmake it a deflationary currency.\\nThe network\\nOnly a small portion of network participants are miners. Most are nodes in order to use the payment\\nnetwork. Becoming a node means downloading and running software locally on their computer that\\nconnects a user to the network, and downloading the blockchain in order to be up to date with the\\nnetwork.\\nThe network is open and decentralized. The code is open source and not controlled by any organization.\\nAs a result, the only barriers to entry into the network are technical ones; a user must have some hard\\ndrive space and an internet connection. Unlike a credit card network, or the SWIFT system for banking\\ntransfers, there are no fees to apply and no applications at all to use the network.\\nThe code is not fixed, but changes over time based on the consensus of those running nodes.\\n\\nDevelopers suggest changes to the code, and if those changes are adopted by the majority of nodes then\\nit becomes a part of the core code. If nodes don't agree with the changes, they won't update their code.\\nIn this sense, the network is highly resistant to malicious code changes; nodes can see the code and\\nwouldn't accept new code that is harmful. It also allows for new innovations to be widely adopted if\\nthey are clearly beneficial.\\nEstimating the size of the network is difficult. One reason this is difficult is that a single user typically\\nhas numerous bitcoin addresses. Many bitcoin wallets now automatically generate new addresses for\\neach transaction, which gives the user more privacy. If an address is reused consistently, an outside\\nobserver could gain knowledge of a users entire financial history via the blockchain. Estimates tend to\\nvary from 500,000 users to several million worldwide. There are approximately 70,000 transactions per\\nday on the blockchain.\\nWallets\\nAs mentioned earlier, owning bitcoins means having control of the private key that gives access to an\\nentry (or multiple entries) on the blockchain. The private key is a small piece of data comprising of a\\nstring of letters and numbers. Keeping that private key secure is essential. A lost private key means\\nthose funds are forever unspendable. A stolen private key will almost certainly lead to the loss of the\\nbitcoins, since the attacker will use the key to transfer funds to an address under their control.\\nThere are numerous implementations of software to manage users private keys and connect to the\\nnetwork. These are called bitcoin clients or wallets. These wallets have varying features and levels of\\nsecurity. The most secure wallets are actually not software at all; private keys can be physically printed\\nonto paper (or other materials) and cannot be stolen electronically. Cold wallets also offer strong\\nsecurity. A cold wallet is a method for storing private keys offline where they cannot easily be attacked.\\nLess secure wallets offer more convenience. These are hot wallets, meaning the private keys are held\\non an internet accessible device. Currently the blockchain stands at approximately 23 gigabytes, which\\ndeters many users from keeping a full copy on their computers. This has led to bitcoin clients that are\\nable to operate by only downloading a portion of the blockchain, or even simply connecting to other\\nnodes that hold the blockchain for them. Mobile applications are becoming an increasingly common\\nway to manage bitcoin wallets as well.\\nAll bitcoin clients have some core functionality in common. They hold the users private keys, sign\\ntransactions and broadcast them to the network, and monitor the blockchain to keep funds updated. To\\nsend bitcoins, the user inputs the public address of the recipient. This public address is a string of 26-34\\nalphanumeric characters. Since it is inconvenient to type this, QR codes are commonly used on mobile\\ndevices to rapidly import the bitcoin address and payment amount for transactions. Once the public\\naddress is entered, the user selects how many bitcoins they wish to send and confirms their transaction.\\nThe client then creates a message with these details, signs it, and broadcasts it out to the network.\\nBitcoin Improvement Proposals\\nBitcoin is open source, and the code is not stagnant. New features to improve the code are called\\nBitcoin Improvement Proposals (BIPs). Since the first BIP in 2011, there have been over 70 new BIPs.\\nMany never became widely accepted by the network, but there are some notable improvements.\\nM-of-N transactions, also called multisignature or multisig, requires multiple parties to agree to a\\ntransaction before it can be completed. Instead of a sole user having control over the bitcoins,\\nownership is now joint between any number of parties. One of the common uses for multisig is a 2-of-3\\ntransaction, meaning that two of three parties must sign a transaction for it to be valid.\\nUsing 2-of-3 allows for a secure escrow system. The three parties are the buyer, seller, and a trusted\\n\\nthird party. Instead of sending bitcoins directly to the seller, the buyer will send funds to the multisig\\naddress, which is created with the public keys of the three parties. The seller can then ship the product\\nor otherwise provide a service, and then sign one of the two signatures needed to release funds from the\\nmultisig to himself. If the buyer receives the good or service, and is content, they can then sign the\\nsecond signature, and the funds will then be released from the multisig to the seller. If the seller never\\nshipped the product, or otherwise tries to scam the buyer, the buyer can simply work with the trusted\\nthird party to sign two signatures to return the funds from the multisig back to the buyer. If the buyer\\nreceives the product but doesn't sign to release funds, the seller can also work with the third party to\\nobtain the necessary two signatures to release funds from the multisig to the seller.\\nHierarchical deterministic (HD) wallets are another notable improvement. Instead of creating a new\\nbitcoin key pair for each address, a HD wallet creates a single master key which can more easily create\\nnew key pairs that are also controlled by the master key. With an HD wallet, you can automatically\\ncreate a new key pair for each transaction, but not have to worry about maintaining the private keys for\\nall keys pairs, only the master private key is needed. Also, as part of BIP 32, HD wallets can be backed\\nup by using a random string of 12 words, called a seed.\\nBIP 38 created private keys that could be password protected at the time of generation. BIP 70 created a\\npayment protocol that allows merchants to offer more options for customers using bitcoin, such as\\nmessages noting payment received and the creation of refund addresses.\\nAltcoins\\nBitcoin was the first digital currency to use a blockchain system. These systems are now called\\ncryptocurrencies. After Bitcoin was started in early 2009, many cryptocurrencies have been created.\\nCryptocurrencies other than Bitcoin are commonly referred to as altcoins.\\nAlmost all of these are Bitcoin clones, typically with some minor changes to the code. It is debatable if\\nthese changes are significant enough for the new currencies to overcome the network effects of the\\nBitcoin network, which is the largest cryptocurrency network by a considerable margin. Many of these\\naltcoins are created solely for speculative purposes, and disappear quickly. Some altcoins are used as a\\ntesting ground to try new features that are considered too risky to test with the Bitcoin network itself.\\nIt's important to note that blockchain technology isn't limited to managing a currency. While the first\\napplication was Bitcoin, other blockchains have since been created to manage other ledgers. Namecoin\\nis a notable example, which maintains a blockchain that records arbitrary names, as an alternative to\\nDomain Name System (DNS) and other centralized identity systems.\\nConclusion\\nBitcoin's distributed public ledger and foundation on cryptography allow for the peer to peer\\ntransaction of value without trusting in traditional institutions.\\nBanks and payment processors aren't necessary in the Bitcoin ecosystem; the trade is peer to peer and\\nno third party has to be trusted with the funds. Central banks aren't necessary; the issuance of new\\ncurrency is determined by a predictable algorithm. Governmental bodies aren't necessary; the\\ntransaction isn't secured by the rule of law but instead by mathematical laws in the cryptography.\\nThis new system has low barriers to entry and cannot be manipulated by any central organization. The\\ncost for sending bitcoins is significantly lower than existing systems, and it is also substantially faster.\\nIf the technological infrastructure in developing nations grows, Bitcoin could give previously unbanked\\nindividuals the opportunity to connect to a global trade network without needing to pay fees or submit\\napplications.\\nBitcoin continues to innovate and implement new features, such as multisig, that open up applications\\n\\nfor money that weren't previously possible. Because it is open source, the options for this\\nprogrammable money are only limited by what the community can come to consensus on.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        256,
+        0
+      ],
+      "id": "5430d81a-312d-4a55-8267-62a635209771",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        208
+      ],
+      "id": "02aef056-e2f1-41ea-88d4-7601a4ac10a1",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "HH8RnGgdPlKVaKSX",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        32
+      ],
+      "id": "7c4ee7e0-22a7-4e1a-b438-d38b8571c322",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Makes an HTTP request and returns the response data (the BTC price)",
+        "url": "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        528,
+        160
+      ],
+      "id": "9d906aaa-65cc-4a46-9674-d38c929e03da",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "09befa6a-42de-47b7-857e-a9fb340b5182",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5c1af28f124f60998c2d95a606ebc06f31be0f2a26c0d4df2639d8a987bbf7a1"
+  },
+  "id": "kbflpSQDq7kUQojf",
+  "tags": []
+}
